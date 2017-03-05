@@ -47,6 +47,7 @@ public class CountWords {
                 continue;
             }
         }
+        reader.close();
 
         return sum;
     }
@@ -69,8 +70,8 @@ public class CountWords {
                 result = result + " " + line;
             }
         }
-        result = result.trim();
-        return result;
+        reader.close();
+        return result.trim();
     }
 
 }
