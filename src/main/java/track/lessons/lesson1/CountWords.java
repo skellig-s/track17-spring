@@ -35,7 +35,7 @@ public class CountWords {
      */
     public long countNumbers(File file) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(file));
-        int sum = 0;
+        long sum = 0;
         int number = 0;
         String line = "";
         while (reader.ready()) {
@@ -62,16 +62,17 @@ public class CountWords {
      */
     public String concatWords(File file) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(file));
-        String result = "";
+        StringBuilder builder = new StringBuilder();
         String line = "";
         while (reader.ready()) {
             line = reader.readLine();
             if ((line.trim().length() != 0) && !(line.matches(".*\\d+.*"))) {
-                result = result + " " + line;
+                builder.append(line);
+                builder.append(" ");
             }
         }
-        reader.close();
-        return result.trim();
+        reader.close();;
+        return builder.toString().trim();
     }
 
 }
