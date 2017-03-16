@@ -39,23 +39,32 @@ public class MyLinkedList extends List implements Stack, Queue {
 
     @Override
     int remove(int idx) throws NoSuchElementException {
-        if (idx > lastIndex) {
+        if (idx >= lastIndex) {
             throw new NoSuchElementException();
         } else {
             Node current = first;
             for (int i = 0; i < idx; i++) {
                 current = current.next;
             }
-            current.prev.next = current.next;
-            current.next.prev = current.prev;
-            lastIndex--;
+            if (current.prev != null && current.next != null) {
+                current.prev.next = current.next;
+                current.next.prev = current.prev;
+                lastIndex--;
+            } else {
+                if (idx == 0) {
+                    dequeu();
+                } else {
+                    pop();
+                }
+            }
+
             return current.val;
         }
     }
 
     @Override
     int get(int idx) throws NoSuchElementException {
-        if (idx > lastIndex - 1) {
+        if (idx >= lastIndex) {
             throw new NoSuchElementException();
         } else {
             Node current = first;

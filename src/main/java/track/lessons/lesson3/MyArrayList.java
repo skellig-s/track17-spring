@@ -12,14 +12,14 @@ import java.util.NoSuchElementException;
  */
 public class MyArrayList extends List {
 
-    private static final int defSize = 10;
+    private static final int defSize = 0;
     private int[] array;
     private int lastIndex;
 
 
     public MyArrayList() {
-        this.array = new int[10];
-        this.lastIndex = 9;
+        this.array = new int[defSize];
+        this.lastIndex = defSize - 1;
 
     }
 
