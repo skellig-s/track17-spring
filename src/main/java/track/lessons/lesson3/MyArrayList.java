@@ -42,15 +42,15 @@ public class MyArrayList extends List {
 
     @Override
     int remove(int idx) throws NoSuchElementException {
-        if (idx > lastIndex){
+        if (idx > lastIndex) {
             throw new NoSuchElementException();
         } else {
-            int removingElement = array[idx];
             int[] buff = new int[array.length - 1];
             System.arraycopy(array, 0, buff, 0, idx);
             if (idx != lastIndex) {
                 System.arraycopy(array, idx + 1, buff, idx, buff.length - idx);
             }
+            int removingElement = array[idx];
             array = buff;
             lastIndex--;
             return removingElement;

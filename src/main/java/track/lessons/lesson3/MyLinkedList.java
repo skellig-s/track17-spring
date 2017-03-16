@@ -43,7 +43,7 @@ public class MyLinkedList extends List implements Stack, Queue {
             throw new NoSuchElementException();
         } else {
             Node current = first;
-            for (int i = 0; i < idx; i++){
+            for (int i = 0; i < idx; i++) {
                 current = current.next;
             }
             current.prev.next = current.next;
@@ -59,7 +59,7 @@ public class MyLinkedList extends List implements Stack, Queue {
             throw new NoSuchElementException();
         } else {
             Node current = first;
-            for (int i = 0; i < idx; i++){
+            for (int i = 0; i < idx; i++) {
                 current = current.next;
             }
             return current.val;
@@ -86,7 +86,7 @@ public class MyLinkedList extends List implements Stack, Queue {
 
     public int dequeu() {
         int val = first.val;
-        if (lastIndex == 1){
+        if (lastIndex == 1) {
             first = null;
             last = null;
         } else {
@@ -99,7 +99,7 @@ public class MyLinkedList extends List implements Stack, Queue {
 
     public void push(int value) {
         Node newNode = new Node(last, null, value);
-        if (last != null){
+        if (last != null) {
             last.next = newNode;
         } else {
             first = newNode;
@@ -108,9 +108,9 @@ public class MyLinkedList extends List implements Stack, Queue {
         lastIndex++;
     } // положить значение наверх стека
 
-    public int pop(){
+    public int pop() {
         int val = last.val;
-        if (lastIndex == 1){
+        if (lastIndex == 1) {
             last = null;
             first = null;
         } else {
