@@ -34,12 +34,7 @@ public class MyLinkedList extends List implements Stack, Queue {
 
     @Override
     void add(int item) {
-        if (lastIndex == 0) {
-            enqueue(item);
-        } else {
-            push(item);
-        }
-
+        push(item);
     }
 
     @Override
@@ -53,13 +48,14 @@ public class MyLinkedList extends List implements Stack, Queue {
             }
             current.prev.next = current.next;
             current.next.prev = current.prev;
+            lastIndex--;
             return current.val;
         }
     }
 
     @Override
     int get(int idx) throws NoSuchElementException {
-        if (idx > lastIndex) {
+        if (idx > lastIndex - 1) {
             throw new NoSuchElementException();
         } else {
             Node current = first;
@@ -77,36 +73,51 @@ public class MyLinkedList extends List implements Stack, Queue {
 
 
     public void enqueue(int value) {
-        first = new Node(null, first, value);
-        if (first.next != null) {
-            first.next.prev = first;
+        Node newNode = new Node(null, first, value);
+        if (first != null) {
+            first.prev = newNode;
+        } else {
+            last = newNode;
         }
+        first = newNode;
+
         lastIndex++;
     }
 
     public int dequeu() {
         int val = first.val;
-        first.next.prev = null;
-        Node newFirst = first.next;
-        first.next = null;
-        first = newFirst;
+        if (lastIndex == 1){
+            first = null;
+            last = null;
+        } else {
+            first = first.next;
+            first.prev = null;
+        }
         lastIndex--;
         return val;
     } // вытащить первый элемент из очереди
 
     public void push(int value) {
-        last = new Node(last, null, value);
-        if (last.prev != null) {
-            last.prev.next = last;
+        Node newNode = new Node(last, null, value);
+        if (last != null){
+            last.next = newNode;
+        } else {
+            first = newNode;
         }
+        last = newNode;
+        lastIndex++;
     } // положить значение наверх стека
 
     public int pop(){
         int val = last.val;
-        last.prev.next = null;
-        Node newLast = last.prev;
-        last.prev = null;
-        last = newLast;
+        if (lastIndex == 1){
+            last = null;
+            first = null;
+        } else {
+            last = last.prev;
+            last.next = null;
+        }
+        lastIndex--;
         return val;
     } // вытащить верхнее значение со стека
 }
