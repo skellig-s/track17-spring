@@ -1,10 +1,6 @@
 package track.lessons.lesson5generics;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import track.util.Util;
 
@@ -24,7 +20,11 @@ public class Cypher {
                     ch += SYMBOL_DIST;
                 }
                 // Если это буква, то собираем частотную информацию
-
+                if (map.get(ch) != null) {
+                    map.put(ch, map.get(ch)+ 1);
+                } else {
+                    map.put(ch, 1);
+                }
 
 
             }
@@ -48,7 +48,16 @@ public class Cypher {
     public Map<Character, Integer> buildHist(String data) {
         Map<Character, Integer> map = readData(data);
 
-        return null;
+        List<Map.Entry<Character, Integer>> list = new ArrayList<>(map.entrySet());
+        list.sort(((o1, o2) -> o2.getValue() - o1.getValue()));
+
+        map = new LinkedHashMap<>();
+
+        for (Map.Entry<Character, Integer> gg : list) {
+            map.put(gg.getKey(), gg.getValue());
+        }
+
+        return map;
     }
 
     /**
@@ -60,7 +69,18 @@ public class Cypher {
      * @return расшифрованный текст
      */
     public String merge(List<Character> in, List<Character> out, String encrypted) {
-        return null;
+        StringBuilder builder = new StringBuilder();
+        for (int i= 0; i < encrypted.length(); i++) {
+            Character ch = encrypted.charAt(i);
+            if (out.contains(ch)) {
+                int current = out.indexOf(ch);
+                builder.append(in.get(current));
+            } else {
+                builder.append(ch);
+            }
+
+        }
+        return builder.toString();
     }
 
     public static void main(String[] args) {
