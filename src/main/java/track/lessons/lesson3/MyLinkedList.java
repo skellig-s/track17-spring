@@ -33,50 +33,49 @@ public class MyLinkedList extends List implements Stack, Queue {
 
 
     @Override
-    void add(int item) {
+    public void add(int item) {
         push(item);
     }
 
     @Override
-    int remove(int idx) throws NoSuchElementException {
-        if (idx >= lastIndex) {
+    public int remove(int idx) throws NoSuchElementException {
+        if ((idx >= lastIndex) || (idx < 0)) {
+            throw new NoSuchElementException();
+        }
+        Node current = first;
+        if (idx == 0) {
+            dequeu();
+            return current.val;
+        }
+        for (int i = 0; i < idx; i++) {
+            current = current.next;
+        }
+        if (current.prev != null && current.next != null) {
+            current.prev.next = current.next;
+            current.next.prev = current.prev;
+            lastIndex--;
+        } else {
+            pop();
+        }
+        return current.val;
+
+    }
+
+    @Override
+    public int get(int idx) throws NoSuchElementException {
+        if ((idx >= lastIndex) || (idx < 0)) {
             throw new NoSuchElementException();
         } else {
             Node current = first;
             for (int i = 0; i < idx; i++) {
                 current = current.next;
             }
-            if (current.prev != null && current.next != null) {
-                current.prev.next = current.next;
-                current.next.prev = current.prev;
-                lastIndex--;
-            } else {
-                if (idx == 0) {
-                    dequeu();
-                } else {
-                    pop();
-                }
-            }
-
             return current.val;
         }
     }
 
     @Override
-    int get(int idx) throws NoSuchElementException {
-        if (idx >= lastIndex) {
-            throw new NoSuchElementException();
-        } else {
-            Node current = first;
-            for (int i = 0; i < idx; i++) {
-                current = current.next;
-            }
-            return current.val;
-        }
-    }
-
-    @Override
-    int size() {
+    public int size() {
         return lastIndex;
     }
 
@@ -94,6 +93,9 @@ public class MyLinkedList extends List implements Stack, Queue {
     }
 
     public int dequeu() {
+        if (lastIndex == 0) {
+            throw new NoSuchElementException();
+        }
         int val = first.val;
         if (lastIndex == 1) {
             first = null;
@@ -118,6 +120,9 @@ public class MyLinkedList extends List implements Stack, Queue {
     } // положить значение наверх стека
 
     public int pop() {
+        if (lastIndex == 0) {
+            throw new NoSuchElementException();
+        }
         int val = last.val;
         if (lastIndex == 1) {
             last = null;

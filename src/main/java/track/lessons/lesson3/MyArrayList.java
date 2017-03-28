@@ -41,8 +41,8 @@ public class MyArrayList extends List {
     }
 
     @Override
-    int remove(int idx) throws NoSuchElementException {
-        if (idx > lastIndex) {
+    public int remove(int idx) throws NoSuchElementException {
+        if ((idx > lastIndex) || (idx < 0)) {
             throw new NoSuchElementException();
         } else {
             int[] buff = new int[array.length - 1];
@@ -58,7 +58,7 @@ public class MyArrayList extends List {
     }
 
     @Override
-    int get(int idx) throws NoSuchElementException {
+    public int get(int idx) throws NoSuchElementException {
         if (idx > this.lastIndex) {
             throw new NoSuchElementException();
         } else {
@@ -67,7 +67,7 @@ public class MyArrayList extends List {
     }
 
     @Override
-    int size() {
+    public int size() {
         return lastIndex + 1;
     }
 }
