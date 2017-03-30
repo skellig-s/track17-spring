@@ -6,23 +6,23 @@ import java.util.Objects;
  * Коробка передач, поле - количество скоростей
  */
 public class Gear {
-    private int count;
+    private Car car;
 
     public Gear() {
     }
 
-    public int getCount() {
-        return count;
+    public Car getCar() {
+        return car;
     }
 
-    public void setCount(int count) {
-        this.count = count;
+    public void setCar(Car car) {
+        this.car = car;
     }
 
     @Override
     public String toString() {
         return "Gear{" +
-                "count=" + count +
+                "Car=" + car +
                 '}';
     }
 
@@ -35,11 +35,11 @@ public class Gear {
             return false;
         }
         Gear gear = (Gear) obj;
-        return count == gear.count;
+        return car == gear.car;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(count);
+        return Objects.hash(car);
     }
 }
