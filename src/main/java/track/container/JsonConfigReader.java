@@ -15,15 +15,11 @@ import track.container.config.*;
 public class JsonConfigReader implements ConfigReader {
 
     @Override
-    public List<Bean> parseBeans(File configFile) throws InvalidConfigurationException {
+    public List<Bean> parseBeans(File configFile) {
         ObjectMapper mapper = new ObjectMapper();
-        Root beansList = null;
+        Root beansList;
         try {
             beansList = mapper.readValue(configFile, Root.class);
-//            System.out.println("List of beans:");
-//            for (Bean bean : beansList.getBeans()) {
-//                System.out.println(bean);
-//            }
             return beansList.getBeans();
         } catch (IOException ex) {
             System.out.println("Ouch, something went wrong:");

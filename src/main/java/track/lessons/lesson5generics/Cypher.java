@@ -21,7 +21,7 @@ public class Cypher {
                 }
                 // Если это буква, то собираем частотную информацию
                 if (map.get(ch) != null) {
-                    map.put(ch, map.get(ch)+ 1);
+                    map.put(ch, map.get(ch) + 1);
                 } else {
                     map.put(ch, 1);
                 }
@@ -70,7 +70,7 @@ public class Cypher {
      */
     public String merge(List<Character> in, List<Character> out, String encrypted) {
         StringBuilder builder = new StringBuilder();
-        for (int i= 0; i < encrypted.length(); i++) {
+        for (int i = 0; i < encrypted.length(); i++) {
             Character ch = encrypted.charAt(i);
             if (out.contains(ch)) {
                 int current = out.indexOf(ch);
