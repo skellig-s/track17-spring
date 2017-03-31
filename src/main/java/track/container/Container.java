@@ -47,15 +47,15 @@ public class Container {
         Class cl = Class.forName(className);
         Object obj;
         if (previousCalls.contains(idName)) {
-            System.out.println("Wow, so repeatable... such loopy...\n");
+//            System.out.println("Wow, so repeatable... such loopy...\n");
             return -1;
         }
-        if (!(objByName.containsKey(idName))) {
+//        if (!(objByName.containsKey(idName))) {
             obj = cl.newInstance();
-        } else {
-            obj = objByName.get(idName);
-            System.out.println("met again: "+ obj);
-        }
+//        } else {
+//            obj = objByName.get(idName);
+//            System.out.println("met again: "+ obj);
+//        }
 
         for (Map.Entry<String, Property> map : properties.entrySet()) {
             Property prop = map.getValue();
@@ -66,6 +66,7 @@ public class Container {
                 if (!objByName.containsKey(prop.getValue())) {
                     previousCalls.add(idName);
                     answer = createObjByBean(beansMap.get(prop.getValue()), previousCalls);
+                    System.out.println("New OBJ for REF created!");
                 }
                 if (answer > 0) {
                     System.out.println("REF FOR started: "+ obj);
@@ -85,7 +86,8 @@ public class Container {
         arg[0] = cl.getDeclaredField(prop.getName()).getType();
         Method method = cl.getDeclaredMethod(getSetterName(prop.getName()), arg);
 
-        System.out.println(objByName.get(prop.getValue()).toString());
+        System.out.println("prop for set: " + objByName.get(prop.getValue()).toString());
+        System.out.println("method name: "+ method.getName());
         method.invoke(obj, objByName.get(prop.getValue()));
         System.out.println(obj);
 
