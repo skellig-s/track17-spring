@@ -16,8 +16,8 @@ public class Main {
         JsonConfigReader reader = new JsonConfigReader();
         List<Bean> list = reader.parseBeans(new File("src/main/resources/config.json"));
 
-        Container container = new Container(list);
-        System.out.println(container.getById("carBe").toString());
+//        Container container = new Container(list);
+//        System.out.println(container.getById("carBe").toString());
 
 
 

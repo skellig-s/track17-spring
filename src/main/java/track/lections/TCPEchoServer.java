@@ -1,4 +1,4 @@
-package com.company;
+package track.lections;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +36,11 @@ public class TCPEchoServer {
             }
 
             clntSock.close();
+        }
+    }
+    public class ServerThread extends Thread {
+        public void run() {
+
         }
     }
 }
