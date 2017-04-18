@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-public class TCPEchoServer {
+public class TcpEchoServer {
     private static final int BUFSIZE = 32;
 
     public static void main(String[] args) throws IOException {
@@ -22,7 +22,7 @@ public class TCPEchoServer {
         int recvMsgSize;
         byte[] recieveBuf = new byte[BUFSIZE];
 
-        while(true) {
+        while (true) {
             Socket clntSock = serverSocket.accept();
 
             SocketAddress clientAddress = clntSock.getRemoteSocketAddress();
