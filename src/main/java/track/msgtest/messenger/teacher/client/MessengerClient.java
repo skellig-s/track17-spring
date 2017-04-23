@@ -1,7 +1,7 @@
 package track.msgtest.messenger.teacher.client;
 
-
 import java.io.IOException;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -149,7 +149,7 @@ public class MessengerClient {
 
         MessengerClient client = new MessengerClient();
         client.setHost("localhost");
-        client.setPort(19000);
+        client.setPort(1025);
         client.setProtocol(new StringProtocol());
 
         try {

@@ -9,6 +9,7 @@ import java.util.List;
 public class TestClass {
     public static void main(String[] args) {
         MessengerServer messengerServer = new MessengerServer();
+
         try {
             messengerServer.start();
         } catch (Exception e) {

@@ -15,7 +15,7 @@ public class JdbcExample {
 
     static Logger log = LoggerFactory.getLogger(JdbcExample.class);
 
-    public static final String PATH_TO_DB = "/Users/dmirty/Dima/track17-spring/track17-spring/track.sqlite";
+    public static final String PATH_TO_DB = "/home/alex/IdeaProjects/track17-spring/track.sqlite";
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
@@ -27,7 +27,7 @@ public class JdbcExample {
         // 2) База идентифицируется урлом, в случае SQLite - это путь к файлу в ФС
         Connection connection = DriverManager.getConnection("jdbc:sqlite:" + PATH_TO_DB);
 
-        final String sql = "SELECT * FROM users LIMIT 3;";
+        final String sql = "SELECT * FROM users LIMIT 4;";
 
         Statement stmt = null;
         ResultSet rs = null;

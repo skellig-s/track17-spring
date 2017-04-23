@@ -15,7 +15,7 @@ public class MessengerClient {
     static InputStream in = null;
     static OutputStream out = null;
 
-    public void init() throws IOException {
+    public static void main(String[] args) throws IOException {
 
         String server = "localhost";
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -42,13 +42,13 @@ public class MessengerClient {
                 out.write(data);
                 out.flush();
 
-            if ((bytesRcvd = in.read(recieveBuf)) == -1) {
-                throw new SocketException("Connection closed prematurely");
-            } else {
-                final byte[] slice = Arrays.copyOfRange(recieveBuf, 0, bytesRcvd);
-                totalBytesRcvd += 1;
-                System.out.println("Received:" + new String(slice));
-            }
+//            if ((bytesRcvd = in.read(recieveBuf)) == -1) {
+//                throw new SocketException("Connection closed prematurely");
+//            } else {
+//                final byte[] slice = Arrays.copyOfRange(recieveBuf, 0, bytesRcvd);
+//                totalBytesRcvd += 1;
+//                System.out.println("Received:" + new String(slice));
+//            }
 //                System.out.println("bytesRcvd" + bytesRcvd);
 //                System.out.println(totalBytesRcvd);
 //            }
@@ -60,19 +60,21 @@ public class MessengerClient {
         socket.close();
     }
 
-    class ClientListenThread extends Thread {
-        byte[] recieveBuf = new byte[32*1024];
-        int bytesRcvd = 0;
+    static class ClientListenThread extends Thread {
+        byte[] recieveBuf = new byte[32 * 1024];
         boolean isActive = true;
 
         @Override
         public void run() {
             while (isActive) {
                 try {
-                    bytesRcvd = in.read(recieveBuf);
-                    final byte[] slice = Arrays.copyOfRange(recieveBuf, 0, bytesRcvd);
-                    System.out.println("Received:" + new String(slice));
+                    int bytesRcvd = in.read(recieveBuf);
+                    if (bytesRcvd > 0) {
+                        final byte[] slice = Arrays.copyOfRange(recieveBuf, 0, bytesRcvd);
+                        System.out.println("Received:" + new String(slice));
+                    }
                 } catch (Exception e) {
+                    System.out.println("listener stopped");
                     isActive = false;
                 }
             }
