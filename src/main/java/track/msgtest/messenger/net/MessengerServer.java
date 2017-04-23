@@ -2,19 +2,12 @@ package track.msgtest.messenger.net;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketAddress;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.*;
 
 /**
@@ -23,7 +16,7 @@ import java.util.concurrent.*;
 public class MessengerServer {
     private static final int BUFSIZE = 32 * 1024;
     static Logger log = LoggerFactory.getLogger(MessengerServer.class);
-    private static int POOLSIZE = 5;
+    private static int POOLSIZE = 2;
     private volatile boolean isRunning;
     ExecutorService executor = null;
 
@@ -44,8 +37,16 @@ public class MessengerServer {
             System.out.println("Started, waiting for connection");
             while (isRunning) {
                 Socket clntSock = serverSocket.accept();
-                System.out.println("Accepted. " + clntSock.getRemoteSocketAddress()+" starting new Thread...");
-                executor.submit(new ServerThread(clntSock));
+                System.out.println("Accepted. " + clntSock.getRemoteSocketAddress()+ " starting new Thread...");
+                ServerThread newThread = new ServerThread(clntSock);
+                for (int i = 0; i < threads.length; i++) {
+                    if (threads[i] == null) {
+                        threads[i] = newThread;
+                        System.out.println("new thread added to array");
+                        break;
+                    }
+                }
+                executor.submit(newThread);
             }
         } catch (IOException e) {
             isRunning = false;
@@ -72,12 +73,6 @@ public class MessengerServer {
 
         ServerThread(Socket clntSock) {
             this.clntSock = clntSock;
-            for (ServerThread t : threads) {
-                if (t == null) {
-                    t = this;
-                    break;
-                }
-            }
         }
 
         @Override
@@ -89,63 +84,30 @@ public class MessengerServer {
             try {
                 in = clntSock.getInputStream();
                 out = clntSock.getOutputStream();
-                System.out.println("Started");
-
-//                clientThread[] threads = this.threads;
+                log.info("Started");
 
                 while (!Thread.currentThread().isInterrupted()) {
-//                    while ((recvMsgSize = in.read(recieveBuf)) != -1) {
-                        recvMsgSize = in.read(recieveBuf);
-                        System.out.println("recieved: " + new String(recieveBuf));
-//                        os.println("new data");
+                    recvMsgSize = in.read(recieveBuf);
+                    System.out.println("recieved: " + new String(recieveBuf, 0, recvMsgSize));
                     for (ServerThread t : threads) {
-                        if ((t != null)&&(t != this)) {
+                        if ((t != null) && (t != this)) {
                             t.out.write(recieveBuf, 0, recvMsgSize);
                         }
                     }
-//                        out.write(recieveBuf, 0, recvMsgSize);
-//                    }
                 }
                 clntSock.close();
             } catch (Exception e) {
                 isRunning = false;
                 log.error(String.format("Error on connection %s:%d", clntSock.getInetAddress(), clntSock.getPort()), e);
             } finally {
-
-                //IoUtil.closeQuietly(serverSocket);
+                for (int i = 0; i < threads.length; i++) {
+                    if (this == threads[i]) {
+                        threads[i] = null;
+                        System.out.println("thread spot cleared");
+                    }
+                }
             }
         }
     }
 
-    /*
-
-    class Worker extends Thread {
-
-        private Socket socket;
-
-        public Worker(Socket socket) {
-            this.socket = socket;
-        }
-
-        @Override
-        public void run() {
-            int iter = 0;
-            while (!Thread.currentThread().isInterrupted()) {
-                System.out.println("iteration: " + iter);
-                try (InputStream in = socket.getInputStream();
-                     OutputStream out = socket.getOutputStream()) {
-                    System.out.println("try started");
-                    byte[] buf = new byte[32 * 1024];
-                    int readBytes = in.read(buf);
-                    String line = new String(buf, 0, readBytes);
-                    System.out.printf("Client>%s\n", line);
-                    out.write(line.getBytes());
-                    out.flush();
-                } catch (Exception e) {
-                    log.error(String.format("Error on connection %s:%d", socket.getInetAddress(), socket.getPort()), e);
-                    return;
-                }
-            }
-        }
-    */
 }
