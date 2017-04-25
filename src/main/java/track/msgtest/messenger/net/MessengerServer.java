@@ -2,25 +2,37 @@ package track.msgtest.messenger.net;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.rmi.runtime.Log;
+import track.msgtest.messenger.User;
+import track.msgtest.messenger.messages.LoginMessage;
+import track.msgtest.messenger.messages.Message;
+import track.msgtest.messenger.messages.Type;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.*;
+
+import static track.msgtest.messenger.messages.Type.MSG_LOGIN;
 
 /**
  *
  */
 public class MessengerServer {
     private static final int BUFSIZE = 32 * 1024;
-    static Logger log = LoggerFactory.getLogger(MessengerServer.class);
     private static int POOLSIZE = 2;
+    static Logger log = LoggerFactory.getLogger(MessengerServer.class);
     private volatile boolean isRunning;
     ExecutorService executor = null;
+    Protocol protocol = new StringProtocol();
 
-    volatile ServerThread[] threads = new ServerThread[POOLSIZE];
+    private volatile ServerThread[] threads = new ServerThread[POOLSIZE];
+    public volatile HashMap<Session, Chat> sessionMap = new HashMap<>(POOLSIZE);
 
     public MessengerServer() {
         this.executor = Executors.newFixedThreadPool(POOLSIZE);
@@ -71,8 +83,10 @@ public class MessengerServer {
         InputStream in = null;
         OutputStream out = null;
 
-        ServerThread(Socket clntSock) {
+        ServerThread(Socket clntSock) throws IOException {
             this.clntSock = clntSock;
+            in = clntSock.getInputStream();
+            out = clntSock.getOutputStream();
         }
 
         @Override
@@ -82,16 +96,22 @@ public class MessengerServer {
             byte[] recieveBuf = new byte[BUFSIZE];
 
             try {
-                in = clntSock.getInputStream();
-                out = clntSock.getOutputStream();
                 log.info("Started");
-
                 while (!Thread.currentThread().isInterrupted()) {
                     recvMsgSize = in.read(recieveBuf);
-                    System.out.println("recieved: " + new String(recieveBuf, 0, recvMsgSize));
-                    for (ServerThread t : threads) {
-                        if ((t != null) && (t != this)) {
-                            t.out.write(recieveBuf, 0, recvMsgSize);
+                    if (recvMsgSize > 0) {
+                        Message message = protocol.decode(Arrays.copyOf(recieveBuf, recvMsgSize));
+                        if (message.getType() == MSG_LOGIN) {
+                            LoginMessage loginMessage = (LoginMessage) message;
+                            User newUser = new User(loginMessage.getName(), loginMessage.getPass());
+                            Session session = new Session(newUser, clntSock, protocol);
+
+                        }
+                        System.out.println("recieved: " + message);
+                        for (ServerThread t : threads) {
+                            if ((t != null) && (t != this)) {
+                                t.out.write(recieveBuf, 0, recvMsgSize);
+                            }
                         }
                     }
                 }

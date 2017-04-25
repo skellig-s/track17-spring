@@ -24,7 +24,6 @@ public class MessengerClient {
         Socket socket = new Socket(server, servPort);
 
         int totalBytesRcvd = 0;
-        byte[] recieveBuf = new byte[32];
 
         in = socket.getInputStream();
         out = socket.getOutputStream();
@@ -38,23 +37,8 @@ public class MessengerClient {
                     line = line.concat("\n");
                 }
                 byte[] data = line.getBytes();
-                int bytesRcvd;
                 out.write(data);
                 out.flush();
-
-//            if ((bytesRcvd = in.read(recieveBuf)) == -1) {
-//                throw new SocketException("Connection closed prematurely");
-//            } else {
-//                final byte[] slice = Arrays.copyOfRange(recieveBuf, 0, bytesRcvd);
-//                totalBytesRcvd += 1;
-//                System.out.println("Received:" + new String(slice));
-//            }
-//                System.out.println("bytesRcvd" + bytesRcvd);
-//                System.out.println(totalBytesRcvd);
-//            }
-//            catch (Exception e) {
-//                e.printStackTrace();
-//            }
         }
 
         socket.close();

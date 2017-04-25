@@ -8,9 +8,11 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import org.apache.log4j.lf5.viewer.LogFactor5InputDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import track.msgtest.messenger.messages.LoginMessage;
 import track.msgtest.messenger.messages.Message;
 import track.msgtest.messenger.messages.TextMessage;
 import track.msgtest.messenger.messages.Type;
@@ -117,16 +119,20 @@ public class MessengerClient {
         String cmdType = tokens[0];
         switch (cmdType) {
             case "/login":
-                // TODO: реализация
+                LoginMessage loginMessage = new LoginMessage(tokens[1], tokens[2]);
+                send(loginMessage);
                 break;
             case "/help":
-                // TODO: реализация
+                printHelp();
                 break;
             case "/text":
-                // FIXME: пример реализации для простого текстового сообщения
+                StringBuilder textToSend = new StringBuilder();
                 TextMessage sendMessage = new TextMessage();
                 sendMessage.setType(Type.MSG_TEXT);
-                sendMessage.setText(tokens[1]);
+                for (int i = 1; i < tokens.length; i++) {
+                    textToSend.append(tokens[i]).append(" ");
+                }
+                sendMessage.setText(textToSend.toString().trim());
                 send(sendMessage);
                 break;
             // TODO: implement another types from wiki
@@ -177,5 +183,9 @@ public class MessengerClient {
 //                client.close();
             }
         }
+    }
+
+    public void printHelp() {
+        System.out.println("Enter /login to log in and start chatting");
     }
 }

@@ -3,6 +3,7 @@ package track.msgtest.messenger.net;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import track.msgtest.messenger.messages.LoginMessage;
 import track.msgtest.messenger.messages.Message;
 import track.msgtest.messenger.messages.TextMessage;
 import track.msgtest.messenger.messages.Type;
@@ -30,6 +31,9 @@ public class StringProtocol implements Protocol {
                 textMsg.setText(tokens[2]);
                 textMsg.setType(type);
                 return textMsg;
+            case MSG_LOGIN:
+                LoginMessage loginMessage = new LoginMessage(tokens[1], tokens[2]);
+                return loginMessage;
             default:
                 throw new ProtocolException("Invalid type: " + type);
         }
@@ -45,6 +49,11 @@ public class StringProtocol implements Protocol {
                 TextMessage sendMessage = (TextMessage) msg;
                 builder.append(String.valueOf(sendMessage.getSenderId())).append(DELIMITER);
                 builder.append(sendMessage.getText()).append(DELIMITER);
+                break;
+            case MSG_LOGIN:
+                LoginMessage loginMessage = (LoginMessage) msg;
+                builder.append(String.valueOf(loginMessage.getName())).append(DELIMITER);
+                builder.append(loginMessage.getPass()).append(DELIMITER);
                 break;
             default:
                 throw new ProtocolException("Invalid type: " + type);
