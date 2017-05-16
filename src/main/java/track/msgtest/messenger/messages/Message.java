@@ -9,6 +9,7 @@ public abstract class Message implements Serializable {
 
     protected Long id;
     protected Long senderId;
+    protected Long timestamp;
     protected Type type;
 
     public Long getId() {
@@ -33,5 +34,13 @@ public abstract class Message implements Serializable {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public Long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Long timestamp) {
+        this.timestamp = timestamp;
     }
 }

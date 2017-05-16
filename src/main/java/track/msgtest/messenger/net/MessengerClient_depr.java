@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Created by alex on 19.04.17.
  */
-public class MessengerClient {
+public class MessengerClient_depr {
 
     static Socket socket = null;
     static InputStream in = null;

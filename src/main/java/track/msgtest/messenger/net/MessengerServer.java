@@ -1,21 +1,13 @@
 package track.msgtest.messenger.net;
 
+import org.hibernate.sql.Select;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.rmi.runtime.Log;
-import track.msgtest.messenger.User;
-import track.msgtest.messenger.messages.LoginMessage;
-import track.msgtest.messenger.messages.Message;
-import track.msgtest.messenger.messages.Type;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.HashMap;
+
 import java.util.concurrent.*;
 
 import static track.msgtest.messenger.messages.Type.MSG_LOGIN;
@@ -28,11 +20,11 @@ public class MessengerServer {
     private static int POOLSIZE = 2;
     static Logger log = LoggerFactory.getLogger(MessengerServer.class);
     private volatile boolean isRunning;
-    ExecutorService executor = null;
+    private ExecutorService executor = null;
     Protocol protocol = new StringProtocol();
 
-    private volatile ServerThread[] threads = new ServerThread[POOLSIZE];
-    public volatile HashMap<Session, Chat> sessionMap = new HashMap<>(POOLSIZE);
+//    private volatile ServerThread[] threads = new ServerThread[POOLSIZE];
+//    public volatile HashMap<Long, Session> sessionMap = new HashMap<>(POOLSIZE);
 
     public MessengerServer() {
         this.executor = Executors.newFixedThreadPool(POOLSIZE);
@@ -47,18 +39,23 @@ public class MessengerServer {
         try {
             serverSocket = new ServerSocket(servPort);
             System.out.println("Started, waiting for connection");
+
             while (isRunning) {
                 Socket clntSock = serverSocket.accept();
                 System.out.println("Accepted. " + clntSock.getRemoteSocketAddress()+ " starting new Thread...");
-                ServerThread newThread = new ServerThread(clntSock);
-                for (int i = 0; i < threads.length; i++) {
-                    if (threads[i] == null) {
-                        threads[i] = newThread;
-                        System.out.println("new thread added to array");
-                        break;
-                    }
-                }
-                executor.submit(newThread);
+//                ServerThread newThread = new ServerThread(clntSock);
+                Session newSession = new Session(null, clntSock, protocol);
+
+//                for (int i = 0; i < threads.length; i++) {
+//                    if (threads[i] == null) {
+//                        threads[i] = newThread;
+//                        System.out.println("new thread added to array");
+//                        break;
+//                    }
+//                }
+                executor.submit(newSession);
+                System.out.println("after executor");
+
             }
         } catch (IOException e) {
             isRunning = false;
@@ -76,6 +73,8 @@ public class MessengerServer {
         }
     }
 
+
+/*
     public class ServerThread extends Thread {
         boolean isRunning;
         private Socket clntSock;
@@ -104,8 +103,6 @@ public class MessengerServer {
                         if (message.getType() == MSG_LOGIN) {
                             LoginMessage loginMessage = (LoginMessage) message;
                             User newUser = new User(loginMessage.getName(), loginMessage.getPass());
-                            Session session = new Session(newUser, clntSock, protocol);
-
                         }
                         System.out.println("recieved: " + message);
                         for (ServerThread t : threads) {
@@ -128,6 +125,6 @@ public class MessengerServer {
                 }
             }
         }
-    }
+    }*/
 
 }

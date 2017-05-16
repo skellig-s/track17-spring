@@ -13,6 +13,26 @@ public class User {
         this.pass = pass;
     }
 
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPass() {
+        return pass;
+    }
+
+    public boolean comp(User other) {
+        return  ((this.getName().equals(other.getName())) && (this.getPass().equals(other.getPass())));
+    }
+
     @Override
     public String toString() {
         return "User{" +

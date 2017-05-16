@@ -1,9 +1,7 @@
 package track.msgtest.messenger.teacher.client;
 
-import java.io.IOException;
+import java.io.*;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -46,6 +44,9 @@ public class MessengerClient {
     private InputStream in;
     private OutputStream out;
 
+    private ObjectInputStream ois;
+    private ObjectOutputStream oos;
+
     public Protocol getProtocol() {
         return protocol;
     }
@@ -74,6 +75,8 @@ public class MessengerClient {
         Socket socket = new Socket(host, port);
         in = socket.getInputStream();
         out = socket.getOutputStream();
+        oos = new ObjectOutputStream(out);
+        ois = new ObjectInputStream(in);
 
         /*
       Тред "слушает" сокет на наличие входящих сообщений от сервера
@@ -84,13 +87,13 @@ public class MessengerClient {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     // Здесь поток блокируется на ожидании данных
-                    int read = in.read(buf);
-                    if (read > 0) {
+                    Message msg = (Message) ois.readObject();
+//                    if (read > 0) {
 
                         // По сети передается поток байт, его нужно раскодировать с помощью протокола
-                        Message msg = protocol.decode(Arrays.copyOf(buf, read));
+//                        Message msg = protocol.decode(Arrays.copyOf(buf, read));
                         onMessage(msg);
-                    }
+//                    }
                 } catch (Exception e) {
                     log.error("Failed to process connection: {}", e);
                     e.printStackTrace();
@@ -129,7 +132,8 @@ public class MessengerClient {
                 StringBuilder textToSend = new StringBuilder();
                 TextMessage sendMessage = new TextMessage();
                 sendMessage.setType(Type.MSG_TEXT);
-                for (int i = 1; i < tokens.length; i++) {
+                sendMessage.setChatId(Integer.parseInt(tokens[1]));
+                for (int i = 2; i < tokens.length; i++) {
                     textToSend.append(tokens[i]).append(" ");
                 }
                 sendMessage.setText(textToSend.toString().trim());
@@ -147,8 +151,8 @@ public class MessengerClient {
      */
     public void send(Message msg) throws IOException, ProtocolException {
         log.info(msg.toString());
-        out.write(protocol.encode(msg));
-        out.flush(); // принудительно проталкиваем буфер с данными
+        oos.writeObject(msg);
+        oos.flush(); // принудительно проталкиваем буфер с данными
     }
 
     public static void main(String[] args) throws Exception {
@@ -163,8 +167,8 @@ public class MessengerClient {
 
             // Цикл чтения с консоли
             Scanner scanner = new Scanner(System.in);
-            System.out.println("$");
             while (true) {
+                System.out.print("$");
                 String input = scanner.nextLine();
                 if ("q".equals(input)) {
                     return;
