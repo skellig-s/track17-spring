@@ -131,6 +131,7 @@ public class MessengerClient {
             case "/text":
                 StringBuilder textToSend = new StringBuilder();
                 TextMessage sendMessage = new TextMessage();
+//                sendMessage.setSenderId();
                 sendMessage.setType(Type.MSG_TEXT);
                 sendMessage.setChatId(Integer.parseInt(tokens[1]));
                 for (int i = 2; i < tokens.length; i++) {

@@ -17,7 +17,7 @@ import java.util.Objects;
  */
 public class LoginCommand implements Command {
     private Logger log = LoggerFactory.getLogger(Session.class);
-    private long userNumber = 0;
+    private static DBstore dbstore = new DBstore();
 
     public void execute(Session session, Message message) throws CommandException {
         LoginMessage loginMessage = (LoginMessage) message;
@@ -27,8 +27,6 @@ public class LoginCommand implements Command {
         User newUser = new User(name, pass);
 
         //TODO: implement adder to userstore
-
-        DBstore dbstore = new DBstore();
 
         User createduser = dbstore.getUser(name, pass);
         if (Objects.equals(createduser, null)) {
